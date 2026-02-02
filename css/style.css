@@ -1,0 +1,47 @@
+/* Custom styles for CRUDTASK - Additional styles if needed */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.btn {
+    border-radius: 5px;
+    padding: 8px 20px;
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+.task-card {
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.status-badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+}
+
+.filter-btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.min-vh-100 {
+    min-height: 100vh;
+}

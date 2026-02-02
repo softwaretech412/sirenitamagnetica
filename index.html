@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUDTASK - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <!-- Logo and App Name -->
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                    <div class="text-2xl"><img src="imgs/logo.png" alt="logo" width="100" height="100"></div>
+                </div>
+                <h2 class="ml-3 text-2xl font-bold text-gray-800">CRUDTASK</h2>
+            </div>
+            
+            <!-- Welcome Text -->
+            <h3 class="text-2xl font-bold mb-2 text-gray-800">Welcome back</h3>
+            <p class="text-gray-600 mb-6">Enter your credentials to access the platform</p>
+            
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-semibold text-gray-800 mb-2">Email or username</label>
+                    <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" id="email" placeholder="student@university.edu" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-semibold text-gray-800 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12" id="password" placeholder="........" required>
+                        <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" id="togglePassword">
+                            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg id="eyeOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mb-6">
+                    <a href="#" class="text-blue-600 text-sm font-medium hover:underline">Forgot password?</a>
+                </div>
+                
+                <div class="mb-4">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">Sign in</button>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-gray-600 text-sm">Don't have an account? <a href="register.html" class="text-blue-600 font-medium hover:underline">Register</a></p>
+                </div>
+            </form>
+            
+            <div id="errorMessage" class="hidden mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg"></div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Check if user is already logged in
+        const currentUser = authAPI.getCurrentUser();
+        if (currentUser) {
+            if (currentUser.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                window.location.href = 'tasks.html';
+            }
+        }
+
+        // Password visibility toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const eyeOffIcon = document.getElementById('eyeOffIcon');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icons
+            if (type === 'password') {
+                eyeIcon.classList.remove('hidden');
+                eyeOffIcon.classList.add('hidden');
+            } else {
+                eyeIcon.classList.add('hidden');
+                eyeOffIcon.classList.remove('hidden');
+            }
+        });
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Hide previous error
+            errorDiv.classList.add('hidden');
+            
+            // Attempt login
+            const result = authAPI.login(email, password);
+            
+            if (result.success) {
+                // Redirect based on role
+                if (result.user.role === 'admin') {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    window.location.href = 'tasks.html';
+                }
+            } else {
+                errorDiv.textContent = result.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
